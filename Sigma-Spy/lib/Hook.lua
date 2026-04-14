@@ -286,8 +286,13 @@ function Hook:HookClientInvoke(Remote, Method, Callback)
 end
 
 function Hook:MultiConnect(Remotes)
-	for _, Remote in next, Remotes do
+	for i, Remote in next, Remotes do
 		self:ConnectClientRecive(Remote)
+
+		--// Yield every 500 remotes to prevent game freezing
+		if i % 500 == 0 then
+			task.wait()
+		end
 	end
 end
 
@@ -412,14 +417,17 @@ function Hook:LoadReceiveHooks()
 		self:ConnectClientRecive(Remote)
 	end)
 
-	--// Collect remotes with nil parents
-	self:MultiConnect(getnilinstances())
+	--// Search for remotes asynchronously
+	task.spawn(function()
+		--// Collect remotes with nil parents
+		self:MultiConnect(getnilinstances())
 
-	--// Search for remotes
-	for _, Service in next, game:GetChildren() do
-		if table.find(BlackListedServices, Service.ClassName) then continue end
-		self:MultiConnect(Service:GetDescendants())
-	end
+		--// Iterate through services
+		for _, Service in next, game:GetChildren() do
+			if table.find(BlackListedServices, Service.ClassName) then continue end
+			self:MultiConnect(Service:GetDescendants())
+		end
+	end)
 end
 
 function Hook:LoadHooks(ActorCode: string, ChannelId: number)

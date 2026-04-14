@@ -56,7 +56,7 @@ end
 
 function CommWrapper:BeginQueueService()
     coroutine.wrap(function()
-        while wait() do
+        while task.wait() do
             self:ProcessQueue()
         end
     end)()
@@ -152,9 +152,9 @@ end
 local Tick = 0
 function Module:WaitCheck()
     Tick += 1
-    if Tick > 40 then
-        Tick = 0 -- I could use modulus here but the interger will be massive
-        wait()
+    if Tick > 500 then
+        Tick = 0
+        task.wait()
     end
 end
 
@@ -219,7 +219,7 @@ function Module:ConsolePrint(...)
 end
 
 function Module:QueueLog(Data)
-    spawn(function()
+    task.spawn(function()
         local SerializedArgs = self:SerializeTable(Data.Args)
         Data.Args = SerializedArgs
 

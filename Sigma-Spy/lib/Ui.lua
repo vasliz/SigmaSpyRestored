@@ -1305,13 +1305,19 @@ end
 
 function Ui:ProcessLogQueue()
 	local Queue = self.LogQueue
-    if #Queue <= 0 then return end
+	local Count = #Queue
+    if Count <= 0 then return end
 
-	--// Create a log element for each in the Queue
-    for Index, Data in next, Queue do
-        self:CreateLog(Data)
-        table.remove(Queue, Index)
-    end
+	--// Process in batches (max 50 per frame) to maintain UI stability
+	local ProcessLimit = 50
+	local ToProcess = math.min(Count, ProcessLimit)
+
+	for _ = 1, ToProcess do
+		local Data = table.remove(Queue, 1)
+        if Data then
+            self:CreateLog(Data)
+        end
+	end
 end
 
 function Ui:BeginLogService()
