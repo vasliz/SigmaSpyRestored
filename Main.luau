@@ -1,15 +1,15 @@
 --// Base Configuration
 local Configuration = {
-	UseWorkspace = false, 
+	UseWorkspace = false,
 	NoActors = false,
 	FolderName = "Sigma Spy",
-	RepoUrl = [[https://raw.githubusercontent.com/newmorta/SigmaSpyRestored/refs/heads/main/Sigma-Spy]],
+	RepoUrl = [[https://raw.githubusercontent.com/vasliz/SigmaSpyRestored/refs/heads/main/Sigma-Spy]],
 	ParserUrl = [[http://c1.play2go.cloud:22023/raw/Roblox-parser/dist/Main.luau]],
-    Directory = "Sigma Spy"
+	Directory = "Sigma Spy",
 }
 
 --// Load overwrites
-local Parameters = {...}
+local Parameters = { ... }
 local Overwrites = Parameters[1]
 if typeof(Overwrites) == "table" then
 	for Key, Value in Overwrites do
@@ -26,10 +26,10 @@ local Services = setmetatable({}, {
 })
 
 --// Files module
-local Files = loadstring(game:HttpGet(Configuration.RepoUrl.."/lib/Files.lua"))()
+local Files = loadstring(game:HttpGet(Configuration.RepoUrl .. "/lib/Files.lua"))()
 Files:PushConfig(Configuration)
 Files:Init({
-	Services = Services
+	Services = Services,
 })
 
 local Folder = Files.FolderName
@@ -46,7 +46,7 @@ local Scripts = {
 	Flags = game:HttpGet(`{Configuration.RepoUrl}/lib/Flags.lua`),
 	Ui = game:HttpGet(`{Configuration.RepoUrl}/lib/Ui.lua`),
 	Generation = game:HttpGet(`{Configuration.RepoUrl}/lib/Generation.lua`),
-	Communication = game:HttpGet(`{Configuration.RepoUrl}/lib/Communication.lua`)
+	Communication = game:HttpGet(`{Configuration.RepoUrl}/lib/Communication.lua`),
 }
 
 --// Services
@@ -71,7 +71,7 @@ Process:CheckConfig(Config)
 Files:LoadModules(Modules, {
 	Modules = Modules,
 	Services = Services,
-    Configuration = Configuration
+	Configuration = Configuration,
 })
 
 --// ReGui Create window
@@ -79,7 +79,7 @@ local Window = Ui:CreateMainWindow()
 
 --// Check if Sigma spy is supported
 local Supported = Process:CheckIsSupported()
-if not Supported then 
+if not Supported then
 	Window:Close()
 	return
 end
@@ -101,14 +101,14 @@ Generation:SetSwapsCallback(function(self)
 	})
 	self:AddSwap(LocalPlayer.Character, {
 		String = "Character",
-		NextParent = LocalPlayer
+		NextParent = LocalPlayer,
 	})
 end)
 
 --// Create window content
 Ui:CreateWindowContent(Window)
 
---// Begin the Log queue 
+--// Begin the Log queue
 Ui:SetCommChannel(Event)
 Ui:BeginLogService()
 
@@ -123,12 +123,12 @@ local EnablePatches = Ui:AskUser({
 		"By enabling this, it MAY trigger hook detections in some games, this is why you are asked.",
 		"If it doesn't work, rejoin and press 'No'",
 		"",
-		"(This does not affect game functionality)"
+		"(This does not affect game functionality)",
 	},
-	Options = {"Yes", "No"}
+	Options = { "Yes", "No" },
 }) == "Yes"
 
 --// Begin hooks
 Event:Fire("BeginHooks", {
-	PatchFunctions = EnablePatches
+	PatchFunctions = EnablePatches,
 })
